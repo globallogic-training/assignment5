@@ -44,11 +44,7 @@ class ViewDetail extends React.Component<VApp, VState> {
 				endTime: this.props.event.endTime,
 				title: this.props.event.title
       });
-      console.log('in if ');
-      
     }
-    console.log('out if ');
-		
   }
 	render() {
 
@@ -64,10 +60,10 @@ class ViewDetail extends React.Component<VApp, VState> {
             Event Title:{`  ${this.state.title}`}
             </div>
             <div className='view-detail-item'>
-            Start Time:{'  '}<Moment format="HH mm">{this.state.startTime}</Moment>
+            Start Time:{'  '}<Moment format="HH mm: A">{this.state.startTime}</Moment>
             </div>
             <div className='view-detail-block'>
-             End Time:{'  '}<Moment format="HH mm">{this.state.endTime}</Moment>
+             End Time:{'  '}<Moment format="HH mm A">{this.state.endTime}</Moment>
           </div>
 				</div>
 			</div>

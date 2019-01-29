@@ -22,7 +22,7 @@ class ShowEvent extends React.Component<PApp, {}> {
 		};
 	}
 	componentDidMount() {
-		this.setCurrentDate(new Date().toDateString());
+		// this.setCurrentDate(new Date().toDateString());s
 	}
 	setCurrentDate = (date: string) => {
 		this.setState({

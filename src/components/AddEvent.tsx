@@ -9,6 +9,9 @@ import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
 import * as moment from 'moment';
 
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+
 interface HState {
 	endTime: any;
 	startTime: any;
@@ -40,12 +43,14 @@ class AddEvent extends React.Component<HProps, HState> {
   }
   
 	componentDidMount() {
+		
 		if (this.props.match.params.id > 0) {
 			this.props.getEventById(this.props.match.params.id);
 			this.setState({
 				startTime: this.props.editEventObject.startTime || '',
 				endTime: this.props.editEventObject.endTime || '',
-				title: this.props.editEventObject.title || ''
+				title: this.props.editEventObject.title || '',
+				id: this.props.editEventObject.id || 0
 			});
 		} else {
 			this.setState({
@@ -58,7 +63,9 @@ class AddEvent extends React.Component<HProps, HState> {
 	componentDidUpdate(prevProps: HProps) {
 		if (
 			this.props.match.params.id > 0 &&
-			prevProps.editEventObject.startTime !== this.props.editEventObject.startTime
+			(prevProps.editEventObject.startTime !== this.props.editEventObject.startTime 
+				|| prevProps.editEventObject.endTime !== this.props.editEventObject.endTime 
+				|| prevProps.editEventObject.title !== this.props.editEventObject.title)
 		) {
 			this.setState({
 				startTime: this.props.editEventObject.startTime,
@@ -70,7 +77,6 @@ class AddEvent extends React.Component<HProps, HState> {
   }
   
 	setStartTime = (value: any) => {
-		console.log(JSON.stringify(value));
 		this.setState({
 			startTime: value
 		});
@@ -112,8 +118,10 @@ class AddEvent extends React.Component<HProps, HState> {
   
 	render() {
 		let date;
-		if (this.props.match.params.id > 0) date = this.props.editEventObject.startTime;
-		else date = this.props.match.params.date;
+		if (this.props.match.params.id > 0) 
+			date = this.props.editEventObject.startTime;
+		else 
+			date = this.props.match.params.date;
 
 		return (
 			<div>
@@ -127,13 +135,32 @@ class AddEvent extends React.Component<HProps, HState> {
 					<div className="input-block">
 						<div className='input-field'>
 						<div className='column-1'>Start Time</div>
-							 <TimePicker className="column-2"
+							 {/* <TimePicker className="column-2"
 								value={moment(this.state.startTime)}
 								onChange={this.setStartTime}
-							/>{' '}
+							/>{' '} */}
+							<DatePicker
+									selected={new Date(this.state.startTime)}
+									onChange={this.setStartTime}
+									showTimeSelect
+									showTimeSelectOnly
+									timeIntervals={15}
+									dateFormat="h:mm aa"
+									timeCaption="Time"
+							/>
 						</div>
 						<div className='input-field' >
-            <div className='column-1'>End Time</div><TimePicker className="column-2" value={moment(this.state.endTime)} onChange={this.setEndTime} />{' '}
+            <div className='column-1'>End Time</div>
+						{/* <TimePicker className="column-2" value={moment(this.state.endTime)} onChange={this.setEndTime} />{' '} */}
+						<DatePicker
+									selected={new Date(this.state.endTime)}
+									onChange={this.setEndTime}
+									showTimeSelect
+									showTimeSelectOnly
+									timeIntervals={15}
+									dateFormat="h:mm aa"
+									timeCaption="Time"
+							/>
 						</div>
 						<div className='input-field'>
             <div className='column-1'>Event Title</div>

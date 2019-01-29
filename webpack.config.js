@@ -9,7 +9,8 @@ module.exports = {
         ,'react-moment','react-redux',
         "react-router-dom",
         "redux",
-        "reselect"]
+        "reselect",
+        "react-datepicker"]
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -31,7 +32,8 @@ module.exports = {
                 },
             {
                 test: /\.(ts|tsx)$/,
-                loader: 'ts-loader'
+                loader: 'ts-loader',
+                exclude: /node_modules/
             },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]

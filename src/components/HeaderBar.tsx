@@ -2,11 +2,22 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import Moment from 'react-moment';
 
+import { getCurrentDate, editCurrentDate } from '../actions/currentDate';
+import { State } from '../reducers';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+
 interface HState {
 	currentDate: string;
 }
 interface HProps {
 	setCurrentDate: any;
+	currentDate: string;
+	getCurrentDate: () => void;
+	editCurrentDate: (date: string) => void;
 }
 
 class HeaderBar extends React.Component<HProps, HState> {
@@ -17,29 +28,47 @@ class HeaderBar extends React.Component<HProps, HState> {
 			currentDate: new Date().toDateString()
 		};
 	}
-	componentDidMount() {}
+	componentDidMount() {
+		this.props.getCurrentDate();
+		this.setState({
+			currentDate: this.props.currentDate
+		});
+		this.props.setCurrentDate(this.props.currentDate);
+	}
+
+	componentDidUpdate(previousProps: HProps){
+		if(previousProps.currentDate !== this.props.currentDate){
+			this.setState({
+				currentDate: this.props.currentDate
+			});
+			this.props.setCurrentDate(this.props.currentDate);
+		}
+	}
+	handleChange = (value: Date) =>{
+		this.props.editCurrentDate(value.toDateString());
+		this.props.setCurrentDate(value.toDateString());
+		
+	}
+
 	previousDate = () => {
 		var date = new Date(this.state.currentDate);
 		date.setDate(date.getDate() - 1);
-		this.setState({
-			currentDate: date.toDateString()
-		});
+		this.props.editCurrentDate(date.toDateString());
 		this.props.setCurrentDate(date.toDateString());
 	};
+
 	nextDate = () => {
 		var date = new Date(this.state.currentDate);
 		date.setDate(date.getDate() + 1);
-		this.setState({
-			currentDate: date.toDateString()
-		});
+		this.props.editCurrentDate(date.toDateString());
 		this.props.setCurrentDate(date.toDateString());
-  };
+	};
+	
   setToday = () =>{
-		this.setState({
-			currentDate: new Date().toDateString()
-		});
+		this.props.editCurrentDate(new Date().toDateString());
 		this.props.setCurrentDate(new Date().toDateString());
-  }
+	}
+	
 	render() {
 		return (
 			<div className="header-bar-column">
@@ -52,7 +81,13 @@ class HeaderBar extends React.Component<HProps, HState> {
 					</button>
 				</div>
 				<div className="current-date">
-					<Moment format="MMM DD YYYY">{this.state.currentDate}</Moment>
+					{/* <Moment format="MMM DD YYYY">{this.state.currentDate}</Moment> */}
+					<DatePicker
+							
+							selected={new Date(this.state.currentDate)}
+							dateFormat="MMM dd, yyyy"
+							onChange={this.handleChange}
+					/>
 				</div>
 
 				<div className="next-button">
@@ -60,7 +95,7 @@ class HeaderBar extends React.Component<HProps, HState> {
 						Next
 					</button>
 					<Link style={{marginLeft: 10}} to={`/add-event/${this.state.currentDate}/0`}>
-						<button style={{padding: 6}}>Add Event</button>
+						<button style={{padding: 4}}>Add Event</button>
 					</Link>
 				</div>
 			</div>
@@ -68,4 +103,13 @@ class HeaderBar extends React.Component<HProps, HState> {
 	}
 }
 
-export default HeaderBar;
+
+const mapStateToProps = (state: State) => {
+	return { currentDate: state.date.currentDate };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+	return bindActionCreators({ getCurrentDate, editCurrentDate }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderBar);

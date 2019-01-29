@@ -14,7 +14,7 @@ export default function OuterHeader() {
 				fontWeight: 1000
 			}}
 		>
-			Assigment 5
+			Assignment 5
 		</div>
 	);
 }
